@@ -1,6 +1,6 @@
-unsigned long value = 1020;
+unsigned long value = 1000;
 unsigned long tempo;
-unsigned long temp_ant = value;
+unsigned long temp_ant = 0;
 int porta = 11;
 
 void setup() {
@@ -13,11 +13,11 @@ void loop() {
   
   Serial.print(tempo);
   Serial.print("\t");
-  Serial.println(temp_ant - tempo);
+  Serial.println(tempo - temp_ant);
   
-  if((temp_ant - tempo) <= 20){
+  if((tempo - temp_ant) >= value){
     digitalWrite(porta, HIGH);
-    temp_ant += value;
+    temp_ant = tempo;
   }else{
     digitalWrite(porta, LOW);
   }
