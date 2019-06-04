@@ -17,4 +17,4 @@ A implementação do código foi feita de maneira que o usuário escolhe entre o
 O esquemático apresenta o circuito com Arduino, Relé e conversor AD de maneira que seja possível o acionamento da câmera em intervalos especificados pelo usuário de tempo ou tensão.
 Tivemos que simular a prensa para conseguirmos fazer alguns testes. Para isso, utilizou-se 2 potenciômetros conectados, em que um limita a tensão recebida pela fonte (que é de 12V) em até 10V e o segundo simula as tensões que seriam enviadas pela prensa hidráulica.
 A câmera é conectada nos terminais do relé indicados no esquemático. Ela tira fotos quando o circuito é fechado pelo relé, em intervalos de tempo ou tensão definidos pelo código.
-[Imagem do primeiro esquematico](https://user-images.githubusercontent.com/40308772/58904498-08340780-86de-11e9-8d0f-73c93ed03429.png)
+(https://user-images.githubusercontent.com/40308772/58904498-08340780-86de-11e9-8d0f-73c93ed03429.png)
