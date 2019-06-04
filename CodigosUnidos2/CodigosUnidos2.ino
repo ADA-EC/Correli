@@ -1,11 +1,12 @@
-#include <Adafruit_ADS1015.h> //biblioteca utilizada por conta do conversor AD
+#include <Adafruit_ADS1015.h>
 #define valueModoTensao 1
-
 unsigned long valueModoTempo = 1000;
+
 float aux = valueModoTensao;
 int sensorValue;
 float tensaoADS;
 float tensaoReal;
+float tensaoAnt = 0.0;
 float forca;
 int porta = 11;
 unsigned long tempo;
@@ -20,13 +21,17 @@ void setup() {
   Serial.begin(9600);
   pinMode(porta, OUTPUT);
   ads.begin();
+  Serial.print("\n\n\n");
   menu();
   while(Serial.available()==0);
   modo = Serial.read(); //Verifica modo de operacao da camera.
   
 }
 
-void loop() {  
+void loop() {
+  //OBS: O modo de operacao pode ser mudado somente se reiniciar o arduino.
+  
+  
   if(modo == 49){ //Valores da tabela ASCII: "49" equivale ao numero "1"  
     calculoForca();
     acionamentoRele();
@@ -38,17 +43,18 @@ void loop() {
   }
 }
 
-void calculoForca(){  //Função utilizada caso  usuário escolha o acionamento da câmera por intervalo de tensão
-  sensorValue = ads.readADC_SingleEnded(0);
+void calculoForca(){
+  
+  sensorValue = ads.readADC_SingleEnded(1);
   tensaoADS = sensorValue * (0.1875 /1000);//ler o que vem do ADS; 0<=tensaoADS<=5V
   tensaoReal = 2 * tensaoADS;
   forca = tensaoReal*25; //em toneladas  
   }
 
 void acionamentoRele(){
-  if((aux-tensaoADS)<=0 ){
+  if((tensaoReal- tensaoAnt)>= aux ){
     digitalWrite(porta, HIGH);
-    aux = tensaoADS+valueModoTensao;
+    tensaoAnt = tensaoReal;
     //delay(1000);
     Serial.println("LIGOU");
   }else{
@@ -56,7 +62,7 @@ void acionamentoRele(){
   }
 }
 
-void printSerial(){ //Função que mostra na serial os valores da tensão real, da tensão sobre o ADS e da força
+void printSerial(){
 
   Serial.print(tensaoReal ,4);
   Serial.print(" V");
@@ -75,7 +81,7 @@ void printSerial(){ //Função que mostra na serial os valores da tensão real, 
   delay(100);
   }
 
-void AcionamentoPorTempo(){ //Função utilizada caso o usuário escolha o acionamento da câmera por intervalo de tempo
+void AcionamentoPorTempo(){
   tempo = millis();
   
   Serial.print(tempo);
@@ -93,5 +99,5 @@ void AcionamentoPorTempo(){ //Função utilizada caso o usuário escolha o acion
 void menu(){
   Serial.print("Escolha o modo de operacao:\n\n");
   Serial.print("1-Tirar fotos com base na forca aplicada\n");
-  Serial.print("2-Tirar fotos ao longo de intervalos de tempo\n"); 
+  Serial.print("2-Tirar fotos ao longo de intervalos de tempo"); 
 }
