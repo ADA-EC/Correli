@@ -18,3 +18,6 @@ O esquemático apresenta o circuito com Arduino, Relé e conversor AD de maneira
 Tivemos que simular a prensa para conseguirmos fazer alguns testes. Para isso, utilizou-se 2 potenciômetros conectados, em que um limita a tensão recebida pela fonte (que é de 12V) em até 10V e o segundo simula as tensões que seriam enviadas pela prensa hidráulica.
 A câmera é conectada nos terminais do relé indicados no esquemático. Ela tira fotos quando o circuito é fechado pelo relé, em intervalos de tempo ou tensão definidos pelo código.
 ![Imagem do primeiro esquematico](https://user-images.githubusercontent.com/40308772/58904498-08340780-86de-11e9-8d0f-73c93ed03429.png)
+
+### Interface Gráfica
+A interface gráfica foi feita em Python. Ela permite que o usuário crie um arquivo com o nome escolhido por ele, escolha a forma de acionamento da câmera (por tempo ou pressão) e defina o intervalo que seja mais conveniente a ele. Então é iniciado o programa e aparece na tela os valores obtidos da pressão que a prensa hidráulica exerce no exato momento em que a foto é tirada.
