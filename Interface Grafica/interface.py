@@ -45,7 +45,7 @@ class Application:
 
 					self.botaofinal = Button(self.paginanova, text="ENTER")
 					self.botaofinal.pack(side=BOTTOM)
-					self.botaofinal["command"]=paginadados
+					self.botaofinal["command"]=pagina_dados
 
 					self.intervaloesc = Entry(self.paginanova)
 					self.intervaloesc.pack(side=BOTTOM)
