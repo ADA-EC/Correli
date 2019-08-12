@@ -29,7 +29,7 @@ class Application:
 				msgb.showerror("ERRO!", "Insira o nome do arquivo!")
 			else:
 				self.paginanova=Toplevel() #cria nova pagina
-				self.paginanova.wm_geometry("300x90")
+				self.paginanova.wm_geometry("300x130")
 				file=open(self.nome.get()+".txt", "w+") #Cria um arquivo com o nome escolhido pelo usuário
 
 				def intervalo_tempo():	#Função utilizada para saber qual botão o usuário apertou (tempo ou força)
@@ -47,10 +47,15 @@ class Application:
 						Após definido o intervalo, a 2a página é fechada, a primeira é limpa e os dados gerados
 						pela prensa são printados na tela da interface
 						'''
-						if self.intervaloesc.get()=="":
-							msgb.showerror("ERRO!", "Insira um intervalo!")
+						if self.intervaloesc.get()=="" or self.funesca.get()=="":
+							msgb.showerror("ERRO!", "Insira um valor!")
+
+						elif self.intervaloesc.get()>self.funesca.get():
+							msgb.showerror("ERRO!", "Insira um intervalo menor do que o fundo de escala!")
+
 						else:
 							interv=self.intervaloesc.get()
+							fundo_escala=self.funesca.get()
 							self.paginanova.destroy()
 							self.primeiroContainer.destroy()
 							self.listbox=Listbox(root, width=70, height=50)
@@ -69,6 +74,7 @@ class Application:
 								file.write("Escolha de intervalo: Tempo\n")
 
 							self.listbox.insert(END, 'Intervalo escolhido: '+str(interv))
+							self.listbox.insert(END, 'Fundo de escala: '+str(fundo_escala))
 							self.listbox.insert(END, ' ')
 
 							file.write("Intervalo escolhido: "+str(interv)+"\n\n")
@@ -101,13 +107,22 @@ class Application:
 					self.intervaloesc = Entry(self.paginanova)
 					self.intervaloesc.pack(side=BOTTOM)
 
-					self.mensagem_lembrete = Label(self.paginanova, text="SOMENTE NÚMEROS!")
-					self.mensagem_lembrete["font"] = ("Calibri", "10")
-					self.mensagem_lembrete.pack(side=BOTTOM)
-
 					self.mensagem = Label(self.paginanova, text="Insira o intervalo")
 					self.mensagem["font"] = ("Calibri", "10")
 					self.mensagem.pack(side=BOTTOM)
+
+
+					self.funesca = Entry(self.paginanova)
+					self.funesca.pack(side=BOTTOM)
+
+					self.mensagem2 = Label(self.paginanova, text="Insira o fundo de escala")
+					self.mensagem2["font"] = ("Calibri", "10")
+					self.mensagem2.pack(side=BOTTOM)
+
+					self.mensagem_lembrete = Label(self.paginanova, text="SOMENTE NÚMEROS!")
+					self.mensagem_lembrete["font"] = ("Calibri", "10")
+					self.mensagem_lembrete.pack(side=BOTTOM)
+					
 
 
 				#Mensagens e botões presentes na 2a página da interface
@@ -131,11 +146,6 @@ class Application:
 		
 		self.botaoConfirm["command"]=parametros #Quando é apertado o botão, o código vai para parâmetros, que cria outra página
 		self.botaoConfirm.pack()
-
-
-
-	
-
 
 
 root = Tk()
