@@ -2,7 +2,7 @@ import serial
 
 arduino = serial.Serial('COM3',9600) #Definida a variavel que se comunicara com o arduino
 
-#---------- Funcao que envia para o Arduin o modo de operacao desejado -----------------------#
+#---------- Funcao que envia para o Arduino o modo de operacao desejado -----------------------#
 
 def send_command(modo): 
     aux = str(modo)
@@ -14,9 +14,18 @@ def comando(opcao):
     if (opcao == 1):    
         send_command("1")#Envia "1" para o arduino; modo por forca
 
-    elif (opcao == 1 ):
+    elif (opcao == 2 ):
         send_command("2")#Envia "2" para o arduino; modo por tempo
         
+     
+#---------- Coleta o modo de operacao que o usuario deseja utilizar e manda para o arduino ---#
+
+print("\nDigite 1 para modo por forca, digite 2 para modo por tempo\n\n")
+
+opcao = int(input("Digite um valor: "))
+
+comando(opcao)
+
 #---------- Recebe do arduino que a operacao pode comecar ------------------------------------#
         
 aux = "0" 
@@ -26,25 +35,17 @@ while(aux == "0"):
     iniciar = (arduino.readline().strip()) #Le se o arduino ja mandou sinal para iniciar
 
     if(iniciar == "comecou"):
-        aux = "vazio"       
-    
-#---------- Coleta o mode de operacao que o usuario deseja utilizar e manda para o arduino ---#
-
-print("\nDigite 1 para modo por forca, digite 2 para modo por tempo\n\n")
-
-opcao = int(input("Digite um valor: "))
-
-comando(opcao)
-
+        aux = "continuar"
+        
 #---------- Loop que recebe as informacoes enviadas pelo arduino -----------------------------#
 
 if(opcao == 1): #Por forca
     
     while(1): 
         
-        tensaoReal = (arduino.readline().strip())#Funcao para receber informações do arduino
-        tensaoADS = (arduino.readline().strip())
-        forca = (arduino.readline().strip())
+        tensaoReal          = (arduino.readline().strip())#Funcao para receber informações do arduino
+        tensaoADS           = (arduino.readline().strip())
+        forca               = (arduino.readline().strip())
         aux_menos_tensaoADS = (arduino.readline().strip())
         
         print("\nTensao real: ",tensaoReal)
@@ -56,7 +57,7 @@ if(opcao == 1): #Por forca
 elif(opcao == 2): #Por tempo
 
     while(1): 
-        tempo = (arduino.readline().strip())#Funcao para receber informações do arduino
+        tempo                = (arduino.readline().strip())
         tempo_menos_temp_ant = (arduino.readline().strip())
         
         print("\nTempo: ",tempo)

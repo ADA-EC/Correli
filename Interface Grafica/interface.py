@@ -2,7 +2,9 @@ from tkinter import *
 import tkinter as tk
 from tkinter import messagebox as msgb
 import datetime	#Biblioteca utilizada para pegar o horário e data de início do teste
+import serial
 
+arduino = serial.Serial('COM3', 9600)
 
 class Application:
 	def __init__(self, master=None):
@@ -24,6 +26,12 @@ class Application:
 		self.nome["font"] = ("Calibri", "10")
 		self.nome.pack(side=TOP)
 
+                #Função para receber o arduino e imprimir informações na listbox
+		def imprime():
+			x=(arduino.readline().strip())
+			self.listbox.insert(END, x)
+			root.after(100, imprime)
+                        
 		def parametros():
 			if self.nome.get()=="":	#Teste para conferir que há algo escrito na primeira caixa de texto
 				msgb.showerror("ERRO!", "Insira o nome do arquivo!")
@@ -80,11 +88,8 @@ class Application:
 							file.write("Intervalo escolhido: "+str(interv)+"\n\n")
 
 
-							oi="batata"
-							for i in range(1000):
-								self.listbox.insert(END, oi)
-								file.write(oi+"\n")
-
+							#Imprime do arduino
+							root.after(100, imprime)
 							
 							#Todos os dados obtidos são colocados no arquivo criado com o nome escolhido pelo usuário
 							file.close()

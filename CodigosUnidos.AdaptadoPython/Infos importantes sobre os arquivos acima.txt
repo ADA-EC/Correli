@@ -1,4 +1,4 @@
-				Detalhes dos codigos contidos nesta pasta
+				Detalhes dos códigos contidos nesta pasta
 
 "CodigosUnidos.AdaptadoPython" (arquivo .ino):
 
