@@ -6,7 +6,7 @@ import serial
 import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 
-arduino = serial.Serial('COM3', 9600)
+arduino = serial.Serial('COM5', 9600)
 
 class Application:
     def __init__(self, master=None):
@@ -33,6 +33,10 @@ class Application:
                     x=(arduino.readline().strip())
                     self.listbox.insert(END, x)
                     root.after(100, imprime)'''
+
+            #Função para enviar dados para o Arduino
+            def enviar(info):
+                    arduino.write(info.encode())
                     
             def parametros():
                     if self.nome.get()=="":	#Teste para conferir que há algo escrito na primeira caixa de texto
@@ -76,6 +80,20 @@ class Application:
                                                         root.destroy()
                                                         sys.exit()
 
+                                                        end = '0'
+                                                        enviar(end)
+                                                        
+                                                    if tempo == 1:
+                                                        modo = 't'
+                                                    else: 
+                                                        modo = 'f'
+
+                                                    interv=self.intervaloesc.get()
+                                                    fundo_escala=self.funesca.get()
+                                                    
+                                                    info = modo + "," +str(interv) + "," + str(fundo_escala)+"\n"
+                                                    enviar(info)
+                                                    
                                                     self.containerlist = Frame(master)
                                                     self.containerlist["pady"] = 1
                                                     self.containerlist["padx"] = 1
@@ -99,6 +117,8 @@ class Application:
                                                     self.paginanova.destroy()
                                                     self.primeiroContainer.destroy()
                                                     self.listbox=Listbox(self.containerlist, width=50, height=20)
+
+                                                    
 
                                                     self.listbox.insert(END, 'Projeto Correli')
                                                     self.listbox.insert(END, 'Horário de início do ensaio: '+str(tempoinicio))
@@ -158,6 +178,7 @@ class Application:
                                     self.mensagem_lembrete["font"] = ("Calibri", "10")
                                     self.mensagem_lembrete.pack(side=BOTTOM)
                                     
+                                    
 
 
                             #Mensagens e botões presentes na 2a página da interface
@@ -173,8 +194,9 @@ class Application:
                             self.botaoforca.pack(side=RIGHT)
                             
                             self.botaoforca["command"]=intervalo_forca
-
                             
+                            start = 'oi'
+                            enviar(start)
             
             self.botaoConfirm=Button(self.primeiroContainer, text="Criar arquivo")
             self.botaoConfirm["width"]=10
