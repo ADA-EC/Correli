@@ -6,7 +6,7 @@ import serial
 import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 
-arduino = serial.Serial('COM5', 9600)
+arduino = serial.Serial('COM9', 9600)
 
 class Application:
     def __init__(self, master=None):
@@ -61,20 +61,21 @@ class Application:
                                             Após definido o intervalo, a 2a página é fechada, a primeira é limpa e os dados gerados
                                             pela prensa são printados na tela da interface
                                             '''
+
+                                            if tempo == 1:
+                                                modo = 't'
+                                            else: 
+                                                modo = 'f'
+                                            
                                             if self.intervaloesc.get()=="" or self.funesca.get()=="":
                                                     msgb.showerror("ERRO!", "Insira um valor!")
 
-                                            elif float(self.intervaloesc.get())>float(self.funesca.get()):
+                                            elif modo == 'f' and float(self.intervaloesc.get())>float(self.funesca.get()):
                                                     print (self.intervaloesc.get()+"\n")
                                                     print (self.funesca.get()+"\n")
                                                     msgb.showerror("ERRO!", "Insira um intervalo menor do que o fundo de escala!")
-
+                                                    
                                             else:
-                                                    def reiniciar():    #função que reinicia o programa
-                                                        file.close()
-                                                        python = sys.executable
-                                                        os.execl(python, python, *sys.argv)
-
                                                     def fechar():       #função que fecha o programa
                                                         file.close()
                                                         root.destroy()
@@ -82,11 +83,7 @@ class Application:
 
                                                         end = '0'
                                                         enviar(end)
-                                                        
-                                                    if tempo == 1:
-                                                        modo = 't'
-                                                    else: 
-                                                        modo = 'f'
+                                                    
 
                                                     interv=self.intervaloesc.get()
                                                     fundo_escala=self.funesca.get()
@@ -103,10 +100,6 @@ class Application:
                                                     self.containerbotao["pady"] = 1
                                                     self.containerbotao["padx"] = 1
                                                     self.containerbotao.pack()
-                                                        
-                                                    self.botaoreiniciar = Button(self.containerbotao, text="Reiniciar",)
-                                                    self.botaoreiniciar.pack(side=RIGHT)
-                                                    self.botaoreiniciar["command"]=reiniciar
 
                                                     self.botaofechar = Button(self.containerbotao, text="Fechar",)
                                                     self.botaofechar.pack(side=LEFT)
@@ -187,17 +180,17 @@ class Application:
                             self.configuracao.pack(side=TOP)
 
                             self.botaotempo = Button(self.paginanova, text="Por tempo")
-                            self.botaotempo.pack(side=LEFT)
+                            self.botaotempo.place(relx=1, rely=0.5, anchor=E)
+                            #self.botaotempo.pack(side=LEFT)
                             self.botaotempo["command"]=intervalo_tempo
 
                             self.botaoforca = Button(self.paginanova, text="Por Força")
-                            self.botaoforca.pack(side=RIGHT)
+                            self.botaoforca.place(relx=0, rely=0.5, anchor=W)
+                            #self.botaoforca.pack(side=RIGHT)
                             
                             self.botaoforca["command"]=intervalo_forca
+
                             
-                            start = 'oi'
-                            enviar(start)
-            
             self.botaoConfirm=Button(self.primeiroContainer, text="Criar arquivo")
             self.botaoConfirm["width"]=10
             self.botaoConfirm.pack(side=BOTTOM)
