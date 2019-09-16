@@ -1,6 +1,0 @@
-Projeto Correli
-Horário de início do ensaio: 2019-09-16 14:55:11.067192
-Escolha de intervalo: Tempo
-Intervalo escolhido: 1000
-Fundo de escala: 250
-
