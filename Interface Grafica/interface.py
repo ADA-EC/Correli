@@ -6,7 +6,7 @@ import serial
 import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 
-arduino = serial.Serial('COM9', 9600)
+arduino = serial.Serial('COM11', 9600)
 
 class Application:
     def __init__(self, master=None):
@@ -29,10 +29,10 @@ class Application:
             self.nome.pack(side=TOP)
 
             #Função para receber o arduino e imprimir informações na listbox
-            '''def imprime():
+            def imprime():
                     x=(arduino.readline().strip())
                     self.listbox.insert(END, x)
-                    root.after(100, imprime)'''
+                    root.after(100, imprime)
 
             #Função para enviar dados para o Arduino
             def enviar(info):
@@ -135,7 +135,7 @@ class Application:
 
 
                                                     #Imprime do arduino
-                                                    #root.after(100, imprime)
+                                                    root.after(100, imprime)
 
                                                     self.scrollbar = Scrollbar(self.containerlist)
                                                     self.scrollbar.pack(side=RIGHT, fill=Y)

@@ -47,7 +47,7 @@ void setup() {
     }
     else if(modo == 't')
     {
-      Serial.println("\t        FORÇA(KT)\t\t\t\t\t      TEMPO(mS)");
+      Serial.println("FORCA                TEMPO");
       intervalo_tempo = intervalo;
       modo_tempo();      
     }
@@ -183,9 +183,9 @@ void AcionamentoPorTempo(){
   
   if((tempo - temp_ant) >= intervalo_tempo){
     
-    Serial.print("\t\t");//Manda informacoes para a interface
+    Serial.print("            ");//Manda informacoes para a interface
     Serial.print(forca);
-    Serial.print("\t\t\t\t\t\t\t");
+    Serial.print("                      ");
     Serial.println(tempo);
     
     digitalWrite(porta_rele, HIGH);
