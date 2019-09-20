@@ -6,7 +6,7 @@ import serial
 import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 
-arduino = serial.Serial('COM11', 9600)
+arduino = serial.Serial('COM6', 9600)
 
 class Application:
     def __init__(self, master=None):
@@ -28,11 +28,6 @@ class Application:
             self.nome["font"] = ("Calibri", "10")
             self.nome.pack(side=TOP)
 
-            #Função para receber o arduino e imprimir informações na listbox
-            def imprime():
-                    x=(arduino.readline().strip())
-                    self.listbox.insert(END, x)
-                    root.after(100, imprime)
 
             #Função para enviar dados para o Arduino
             def enviar(info):
@@ -77,12 +72,12 @@ class Application:
                                                     
                                             else:
                                                     def fechar():       #função que fecha o programa
+                                                        end = '0'
+                                                        enviar(end)
                                                         file.close()
                                                         root.destroy()
                                                         sys.exit()
-
-                                                        end = '0'
-                                                        enviar(end)
+                                                        print("oi")
                                                     
 
                                                     interv=self.intervaloesc.get()
@@ -112,6 +107,13 @@ class Application:
                                                     self.listbox=Listbox(self.containerlist, width=50, height=20)
 
                                                     
+                                                    #Função para receber o arduino e imprimir informações na listbox
+                                                    def imprime():
+                                                            x=(arduino.readline().strip())
+                                                            self.listbox.insert(END, x)
+                                                            self.listbox.yview(END)
+                                                            root.after(100, imprime)
+                                                            file.write(x.decode("utf-8") + "\n")
 
                                                     self.listbox.insert(END, 'Projeto Correli')
                                                     self.listbox.insert(END, 'Horário de início do ensaio: '+str(tempoinicio))
