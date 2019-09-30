@@ -6,7 +6,11 @@ import serial
 import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 
+<<<<<<< HEAD
 arduino = serial.Serial('COM3', 9600)
+=======
+arduino = serial.Serial('COM6', 9600)
+>>>>>>> f1a128a438713abceaca8dcadf49c57660dcca03
 
 class Application:
     def __init__(self, master=None):
@@ -66,8 +70,13 @@ class Application:
                                                     msgb.showerror("ERRO!", "Insira um valor!")
 
                                             elif modo == 'f' and float(self.intervaloesc.get())>float(self.funesca.get()):
+<<<<<<< HEAD
                                                     '''print (self.intervaloesc.get()+"\n")
                                                     print (self.funesca.get()+"\n")'''
+=======
+                                                    print (self.intervaloesc.get()+"\n")
+                                                    print (self.funesca.get()+"\n")
+>>>>>>> f1a128a438713abceaca8dcadf49c57660dcca03
                                                     msgb.showerror("ERRO!", "Insira um intervalo menor do que o fundo de escala!")
                                                     
                                             else:
@@ -77,9 +86,14 @@ class Application:
                                                         file.close()
                                                         root.destroy()
                                                         sys.exit()
+<<<<<<< HEAD
 
                                                     '''print (self.intervaloesc.get())
                                                     print (self.funesca.get())'''
+=======
+                                                        print("oi")
+                                                    
+>>>>>>> f1a128a438713abceaca8dcadf49c57660dcca03
 
                                                     interv=self.intervaloesc.get()
                                                     fundo_escala=self.funesca.get()
@@ -111,10 +125,13 @@ class Application:
                                                     #Função para receber o arduino e imprimir informações na listbox
                                                     def imprime():
                                                             x=(arduino.readline().strip())
+<<<<<<< HEAD
                                                             #print (x)
                                                             if x==0:
                                                                 fechar
                                                             
+=======
+>>>>>>> f1a128a438713abceaca8dcadf49c57660dcca03
                                                             self.listbox.insert(END, x)
                                                             self.listbox.yview(END)
                                                             root.after(100, imprime)
@@ -194,10 +211,18 @@ class Application:
 
                             self.botaotempo = Button(self.paginanova, text="Por tempo")
                             self.botaotempo.place(relx=1, rely=0.5, anchor=E)
+<<<<<<< HEAD
+=======
+                            #self.botaotempo.pack(side=LEFT)
+>>>>>>> f1a128a438713abceaca8dcadf49c57660dcca03
                             self.botaotempo["command"]=intervalo_tempo
 
                             self.botaoforca = Button(self.paginanova, text="Por Força")
                             self.botaoforca.place(relx=0, rely=0.5, anchor=W)
+<<<<<<< HEAD
+=======
+                            #self.botaoforca.pack(side=RIGHT)
+>>>>>>> f1a128a438713abceaca8dcadf49c57660dcca03
                             
                             self.botaoforca["command"]=intervalo_forca
 

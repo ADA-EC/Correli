@@ -12,7 +12,7 @@ float tensaoReal;
 float tensaoAnt = 0.0;
 float forca;
 
-int porta_rele = 11;
+int porta_rele = 10;
 
 unsigned long tempo;
 unsigned long temp_ant = 0;
@@ -31,20 +31,23 @@ void setup() {
 
   Serial.begin(9600);
   pinMode(porta_rele, OUTPUT);
+  digitalWrite(porta_rele, LOW);
   ads.begin();
 
-  if(verificar_comecar())
+  if(1)
   {   
     recebe_dados();
     converte_dados();
-
+    //Serial.println("Entrou");
     if(modo == 'f')
     {
+      //Serial.println("Forçaa !!");
       intervalo_tensao = intervalo;
       modo_forca();
     }
     else if(modo == 't')
     {
+      Serial.println("FORCA                TEMPO");
       intervalo_tempo = intervalo;
       modo_tempo();      
     }
@@ -61,6 +64,7 @@ int verificar_comecar()
       verifica = Serial.read();       
   }
 
+  Serial.println(verifica);
   return OK;
 }
 
@@ -105,6 +109,8 @@ void recebe_dados()
       }
     }
   }
+  //Serial.println(fundoS);
+  //Serial.println(intervaloS);
 }
 
 void converte_dados()
@@ -119,6 +125,7 @@ void modo_tempo()
   
   while(parada == '0')
   {
+    calculoForca();
     AcionamentoPorTempo();
     //Precisa implementar receber parada
   }
@@ -139,10 +146,10 @@ void modo_forca()
 
 void calculoForca(){
   
-  sensorValue = ads.readADC_SingleEnded(1);
+  sensorValue = ads.readADC_SingleEnded(0);
   tensaoADS = sensorValue * (0.1875 /1000);//ler o que vem do ADS; 0<=tensaoADS<=5V
   tensaoReal = 2 * tensaoADS;
-  forca = tensaoReal*(fundo_escala); //em toneladas  
+  forca = tensaoReal*(fundo_escala); //em toneladas
 }
 
 void acionamentoRele(){
@@ -163,7 +170,7 @@ void printSerialForca(){
   Serial.println(tensaoADS ,4);
   
   Serial.println(forca ,4);
-  
+ 
 //  Serial.println(aux-tensaoADS, 4);
 }
 
@@ -171,11 +178,18 @@ void AcionamentoPorTempo(){
   
   tempo = millis();
     
-  Serial.println(tempo);
-  Serial.println(tempo - temp_ant);
+  //Serial.println(tempo);
+  //Serial.println(tempo - temp_ant);
   
   if((tempo - temp_ant) >= intervalo_tempo){
+    
+    Serial.print("            ");//Manda informacoes para a interface
+    Serial.print(forca);
+    Serial.print("                      ");
+    Serial.println(tempo);
+    
     digitalWrite(porta_rele, HIGH);
+    delay(10);
     temp_ant = tempo;
   }else{
     digitalWrite(porta_rele, LOW);
