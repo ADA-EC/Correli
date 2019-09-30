@@ -6,7 +6,7 @@ import serial
 import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 
-arduino = serial.Serial('COM5', 9600)
+arduino = serial.Serial('COM3', 9600)
 
 class Application:
     def __init__(self, master=None):
@@ -28,11 +28,6 @@ class Application:
             self.nome["font"] = ("Calibri", "10")
             self.nome.pack(side=TOP)
 
-            #Função para receber o arduino e imprimir informações na listbox
-            '''def imprime():
-                    x=(arduino.readline().strip())
-                    self.listbox.insert(END, x)
-                    root.after(100, imprime)'''
 
             #Função para enviar dados para o Arduino
             def enviar(info):
@@ -61,32 +56,30 @@ class Application:
                                             Após definido o intervalo, a 2a página é fechada, a primeira é limpa e os dados gerados
                                             pela prensa são printados na tela da interface
                                             '''
+
+                                            if tempo == 1:
+                                                modo = 't'
+                                            else: 
+                                                modo = 'f'
+                                            
                                             if self.intervaloesc.get()=="" or self.funesca.get()=="":
                                                     msgb.showerror("ERRO!", "Insira um valor!")
 
-                                            elif float(self.intervaloesc.get())>float(self.funesca.get()):
-                                                    print (self.intervaloesc.get()+"\n")
-                                                    print (self.funesca.get()+"\n")
+                                            elif modo == 'f' and float(self.intervaloesc.get())>float(self.funesca.get()):
+                                                    '''print (self.intervaloesc.get()+"\n")
+                                                    print (self.funesca.get()+"\n")'''
                                                     msgb.showerror("ERRO!", "Insira um intervalo menor do que o fundo de escala!")
-
+                                                    
                                             else:
-                                                    def reiniciar():    #função que reinicia o programa
-                                                        file.close()
-                                                        python = sys.executable
-                                                        os.execl(python, python, *sys.argv)
-
                                                     def fechar():       #função que fecha o programa
+                                                        end = '0'
+                                                        enviar(end)
                                                         file.close()
                                                         root.destroy()
                                                         sys.exit()
 
-                                                        end = '0'
-                                                        enviar(end)
-                                                        
-                                                    if tempo == 1:
-                                                        modo = 't'
-                                                    else: 
-                                                        modo = 'f'
+                                                    '''print (self.intervaloesc.get())
+                                                    print (self.funesca.get())'''
 
                                                     interv=self.intervaloesc.get()
                                                     fundo_escala=self.funesca.get()
@@ -103,10 +96,6 @@ class Application:
                                                     self.containerbotao["pady"] = 1
                                                     self.containerbotao["padx"] = 1
                                                     self.containerbotao.pack()
-                                                        
-                                                    self.botaoreiniciar = Button(self.containerbotao, text="Reiniciar",)
-                                                    self.botaoreiniciar.pack(side=RIGHT)
-                                                    self.botaoreiniciar["command"]=reiniciar
 
                                                     self.botaofechar = Button(self.containerbotao, text="Fechar",)
                                                     self.botaofechar.pack(side=LEFT)
@@ -119,6 +108,17 @@ class Application:
                                                     self.listbox=Listbox(self.containerlist, width=50, height=20)
 
                                                     
+                                                    #Função para receber o arduino e imprimir informações na listbox
+                                                    def imprime():
+                                                            x=(arduino.readline().strip())
+                                                            #print (x)
+                                                            if x==0:
+                                                                fechar
+                                                            
+                                                            self.listbox.insert(END, x)
+                                                            self.listbox.yview(END)
+                                                            root.after(100, imprime)
+                                                            file.write(x.decode("utf-8") + "\n")
 
                                                     self.listbox.insert(END, 'Projeto Correli')
                                                     self.listbox.insert(END, 'Horário de início do ensaio: '+str(tempoinicio))
@@ -142,13 +142,14 @@ class Application:
 
 
                                                     #Imprime do arduino
-                                                    #root.after(100, imprime)
+                                                    root.after(100, imprime)
 
                                                     self.scrollbar = Scrollbar(self.containerlist)
                                                     self.scrollbar.pack(side=RIGHT, fill=Y)
                                                     self.listbox.config(yscrollcommand=self.scrollbar.set)
                                                     self.scrollbar.config(command=self.listbox.yview)
                                                     self.listbox.pack(fill=BOTH, expand=1)
+
 
                                     #Mensagens e botões presentes na 2a página da interface
                                     self.botaofinal = Button(self.paginanova, text="ENTER")
@@ -162,9 +163,14 @@ class Application:
                                     self.intervaloesc = Entry(self.paginanova)
                                     self.intervaloesc.pack(side=BOTTOM)
 
-                                    self.mensagem = Label(self.paginanova, text="Insira o intervalo")
-                                    self.mensagem["font"] = ("Calibri", "10")
-                                    self.mensagem.pack(side=BOTTOM)
+                                    if tempo==1:    #escolha de tempo
+                                        self.mensagem = Label(self.paginanova, text="Insira o intervalo (em milissegundos)")
+                                        self.mensagem["font"] = ("Calibri", "10")
+                                        self.mensagem.pack(side=BOTTOM)
+                                    else:   #escolha de força
+                                        self.mensagem = Label(self.paginanova, text="Insira o intervalo (em Newton)")
+                                        self.mensagem["font"] = ("Calibri", "10")
+                                        self.mensagem.pack(side=BOTTOM)
 
 
                                     self.funesca = Entry(self.paginanova)
@@ -187,17 +193,15 @@ class Application:
                             self.configuracao.pack(side=TOP)
 
                             self.botaotempo = Button(self.paginanova, text="Por tempo")
-                            self.botaotempo.pack(side=LEFT)
+                            self.botaotempo.place(relx=1, rely=0.5, anchor=E)
                             self.botaotempo["command"]=intervalo_tempo
 
                             self.botaoforca = Button(self.paginanova, text="Por Força")
-                            self.botaoforca.pack(side=RIGHT)
+                            self.botaoforca.place(relx=0, rely=0.5, anchor=W)
                             
                             self.botaoforca["command"]=intervalo_forca
+
                             
-                            start = 'oi'
-                            enviar(start)
-            
             self.botaoConfirm=Button(self.primeiroContainer, text="Criar arquivo")
             self.botaoConfirm["width"]=10
             self.botaoConfirm.pack(side=BOTTOM)
