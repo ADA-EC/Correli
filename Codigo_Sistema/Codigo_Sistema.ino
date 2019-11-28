@@ -35,7 +35,6 @@ void setup() {
   pinMode(porta_rele, OUTPUT);
   digitalWrite(porta_rele, HIGH);
   
-  //ads.setGain(GAIN_ONE);
   ads.begin();
 
   if(1)
@@ -45,14 +44,14 @@ void setup() {
     //Serial.println("Entrou");
     if(modo == 'f')
     {
-      Serial.println("IMAGEM         TENSAO         FORCA         FORCA_P            TENSAO_D            TEMPO");
+      Serial.println("IMAGEM       TENSAO         FORCA         FORCA_P            TENSAO_P            INTERVALO");
 
       intervalo_forca = intervalo;
       modo_forca();
     }
     else if(modo == 't')
     {
-      Serial.println("IMAGEM         TENSAO         FORCA         FORCA_P            TENSAO_D            TEMPO");
+      Serial.println("IMAGEM       TENSAO         FORCA         FORCA_P            TENSAO_P            INTERVALO");
       intervalo_tempo = intervalo;
       modo_tempo();      
     }
@@ -114,8 +113,7 @@ void recebe_dados()
       }
     }
   }
-  //Serial.println(fundoS);
-  //Serial.println(intervaloS);
+
 }
 
 void converte_dados()
@@ -132,32 +130,27 @@ void modo_tempo()
   {
     calculoForca();
     verificarTempo();
-    parada = receber_parada();//Precisa implementar receber parada
+    parada = receber_parada();
   }
 }
 
 void modo_forca()
 {
-  char parada = '0';
+  int parada = 0;
   
-  while(parada == '0')
+  while(!parada)
   {
     calculoForca();
     verificarForca();
-
-    //printSerialForca();
-    //Precisa implementar receber parada
+    parada = receber_parada();
   }
 }
 
 void calculoForca(){
   
   sensorValue = ads.readADC_SingleEnded(1);
-  //sensorValue = analogRead(0);
-  //tensaoReal = map_f(sensorValue,0,65535,0,10);
   tensaoADS = sensorValue * (0.1875 /1000);//ler o que vem do ADS; 0<=tensaoADS<=5V
-  //tensaoReal = 2 * tensaoADS;
-  //forca = tensaoReal*(fundo_escala); //em toneladas
+  tensaoReal = tensaoADS*2;
   forca = map_f(sensorValue,0,65536,0,fundo_escala);
 
   if(forca >= fundo_escala)
@@ -165,22 +158,24 @@ void calculoForca(){
 }
 
 void verificarForca(){
+
+  calculoForca();
+  
   if((forca - forcaAnt)>= intervalo_forca){
 
     Serial.print(cont);
-    
     calculoForca();
     Serial.print("            ");
     Serial.print(tensaoReal,4);
     Serial.print("            ");
-    Serial.print(forca); //FORCA ANTERIOR
+    Serial.print(forca,4); //FORCA ANTERIOR
   
     digitalWrite(porta_rele, LOW);//ACIONAMENTO DO RELE
 
     calculoForca();
     
     Serial.print("            ");
-    Serial.print(forca);//FORCA POSTERIOR
+    Serial.print(forca,4);//FORCA POSTERIOR
     
     Serial.print("            ");
     Serial.print(tensaoReal,4); //Tensão Real
@@ -196,31 +191,17 @@ void verificarForca(){
   }
 }
 
-void printSerialForca(){
-
-  delay(100); 
-  
-  Serial.println(tensaoReal ,4); //Manda informacoes para a interface
-  
-  Serial.println(tensaoADS ,4);
-   
-//  Serial.println(aux-tensaoADS, 4);
-}
-
 void verificarTempo(){
   
   tempo = millis();
     
-  //Serial.println(tempo);
-  //Serial.println(tempo - temp_ant);
-  
   if((tempo - tempoAnt) >= intervalo_tempo){
 
     Serial.print(cont);
 
     calculoForca();
     Serial.print("            ");
-    Serial.print(tensaoADS,4);
+    Serial.print(tensaoReal,4);
     Serial.print("            ");
     Serial.print(forca,4); //FORCA ANTERIOR
   
@@ -233,7 +214,7 @@ void verificarTempo(){
     Serial.print(forca,4);//FORCA POSTERIOR
     
     Serial.print("            ");
-    Serial.print(tensaoADS,4);
+    Serial.print(tensaoReal,4);
     
     Serial.print("            ");
     Serial.println(tempo-tempoAnt);
