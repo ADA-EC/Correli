@@ -166,19 +166,19 @@ void verificarForca(){
     Serial.print(cont);
     calculoForca();
     Serial.print("            ");
-    Serial.print(tensaoReal,4);
+    Serial.print(tensaoReal,5);
     Serial.print("            ");
-    Serial.print(forca,4); //FORCA ANTERIOR
+    Serial.print(forca,5); //FORCA ANTERIOR
   
     digitalWrite(porta_rele, LOW);//ACIONAMENTO DO RELE
 
     calculoForca();
     
     Serial.print("            ");
-    Serial.print(forca,4);//FORCA POSTERIOR
+    Serial.print(forca,5);//FORCA POSTERIOR
     
     Serial.print("            ");
-    Serial.print(tensaoReal,4); //Tensão Real
+    Serial.print(tensaoReal,5); //Tensão Real
     
     Serial.print("            ");
     Serial.println(forca-forcaAnt); //Invervalo
