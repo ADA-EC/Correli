@@ -1,5 +1,5 @@
 # Projeto Correli
-Projeto desenvolvido pelo Grupo ADA - Projetos em Engenharia de Computação em parceiria com o Departamento de Estruturas da EESC.
+Projeto desenvolvido pelo Grupo ADA - Projetos em Engenharia de Computação em parceiria com o Departamento de Estruturas da EESC - USP.
 
 ## Configuração
 Para que o código seja executado corretamente, é preciso que um Arduino esteja conectado a uma porta USB do computador.
