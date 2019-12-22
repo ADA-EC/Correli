@@ -5,14 +5,15 @@ Projeto desenvolvido pelo Grupo ADA - Projetos em Engenharia de Computação em 
 É necessário que um Arduino esteja conectado a uma porta USB do computador para que o código seja executado corretamente.
 
 ### Ubuntu
-Para executar o código no sistesma operacional Ubuntu (os testes foram realizados no Ubuntu 18.04), é necessário possuir a versão 3 do Python, e instalar as seguintes bibliotecas:
+Antes de executar o código no sistesma operacional Ubuntu (os testes foram realizados no Ubuntu 18.04), é necessário possuir a versão 3 do Python, e instalar as seguintes bibliotecas:
 
 - tkinter
 - pyserial 
 - serial.tools.list_ports
 
+Para rodar o código, digitar o seguinte comando no terminal:
    
-   `$ python3 interca.py`
+   `$ python3 interface.py`
  
 
 ### Windows
