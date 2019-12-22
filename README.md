@@ -2,7 +2,7 @@
 Projeto desenvolvido pelo Grupo ADA - Projetos em Engenharia de Computação em parceiria com o Departamento de Estruturas da EESC - USP.
 
 ## Configuração
-Para que o código seja executado corretamente, é preciso que um Arduino esteja conectado a uma porta USB do computador.
+É necessário que um Arduino esteja conectado a uma porta USB do computador para que o código seja executado corretamente.
 
 ### Ubuntu
 Para executar o código no sistesma operacional Ubuntu (os testes foram realizados no Ubuntu 18.04), é necessário possuir a versão 3 do Python, e instalar as seguintes bibliotecas:
