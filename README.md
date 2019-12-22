@@ -11,7 +11,7 @@ Para executar o código no sistesma operacional Ubuntu (os testes foram realizad
 - pyserial 
 - serial.tools.list_ports
 
-    $ whoami
+    '$ python3 interface'
 
 ### Windows
 No WIndows, basta rodar o executável previamente criado com Pyinstaller que o programa será executado normalmente. Para executar o código a partir do aquivo Python, é necessário possuir as mesmas bibliotecas e a versão do Python exigida para execução em Linux.
