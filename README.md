@@ -5,17 +5,16 @@ Projeto desenvolvido pelo Grupo ADA - Projetos em Engenharia de Computação em 
 É necessário que um Arduino esteja conectado a uma porta USB do computador para que o código seja executado corretamente.
 
 ### Ubuntu
-Antes de executar o código no sistesma operacional Ubuntu (os testes foram realizados no Ubuntu 18.04), é necessário possuir a versão 3 do Python, e instalar as seguintes bibliotecas:
+Antes de executar o código no sistesma operacional Ubuntu (os testes foram realizados no Ubuntu 18.04), é necessário possuir o [Python versão 3](https://www.python.org/download/releases/3.0/), e instalar as seguintes bibliotecas:
 
-- tkinter
-- pyserial 
-- serial.tools.list_ports
+- [tkinter](https://docs.python.org/3/library/tkinter.html)
+- [pyserial](https://pyserial.readthedocs.io/en/latest/pyserial.html) 
+- [serial.tools.list_ports](https://pyserial.readthedocs.io/en/latest/tools.html)
 
 Para rodar o código, digitar o seguinte comando no terminal:
    
    `$ python3 interface.py`
  
-
 ### Windows
 No WIndows, basta rodar o executável previamente criado com Pyinstaller que o programa será executado normalmente. Para executar o código a partir do aquivo Python, é necessário possuir as mesmas bibliotecas e versão do Python exigida para execução em Linux e clicar duas vezes no programa para executá-lo.
 
