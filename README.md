@@ -1,8 +1,22 @@
-# Correli
-Projeto desenvolvido pela ADA em parceiria com o departamento de Estruturas da EESC
+# Projeto Correli
+Projeto desenvolvido pelo Grupo ADA - Projetos em Engenharia de Computação em parceiria com o Departamento de Estruturas da EESC.
 
-## Descrição
-Criação de um sistema que integre uma prensa hidráulica e uma câmera. 
+## Configuração
+Para que o código seja executado corretamente, é preciso que um Arduino esteja conectado a uma porta USB do computador.
+
+### Ubuntu
+Para executar o código no sistesma operacional Ubuntu (os testes foram realizados no Ubuntu 18.04), é necessário possuir a versão 3 do Python, e instalar as seguintes bibliotecas:
+
+- tkinter
+- pyserial 
+- serial.tools.list_ports
+
+### Windows
+No WIndows, basta rodar o executável previamente criado com Pyinstaller que o programa será executado normalmente. Para executar o código a partir do aquivo Python, é necessário possuir as mesmas bibliotecas e a versão do Python exigida para execução em Linux.
+
+## Descrição do Projeto
+Criação de um sistema que integre uma prensa hidráulica e uma câmera que tira fotos do corpo de prova que é submetido ao ensaio na prensa. Por meio de uma interface gráfica, o usuário escolhe o modo de operação da camêra (por tempo ou por intervalo de força realizado pela prensa) para tirar a foto. Os dados do ensaio e as tensões nos momentos em que as fotos s
+ão tiradas são registrados em um arquivo que fica salvo no final da execução. 
 
 ### Prensa Hidráulica
 A prensa possui uma saída de tensão que pode ser relacionada com a força que está sendo aplicada em um corpo de prova. Essa tensão pode variar entre -10 volts e 10 volts, a princípio iremos considerar apenas os valores positivos (0-10 volts), tendo uma precisão de 4 casas decimais na leitura dessa tensão e, por fim, podemos convertê-la para força, uma vez que a cada volt temos 25 toneladas sendo aplicado. 
