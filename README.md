@@ -17,7 +17,7 @@ Para rodar o código, digitar o seguinte comando no terminal:
  
 
 ### Windows
-No WIndows, basta rodar o executável previamente criado com Pyinstaller que o programa será executado normalmente. Para executar o código a partir do aquivo Python, é necessário possuir as mesmas bibliotecas e a versão do Python exigida para execução em Linux.
+No WIndows, basta rodar o executável previamente criado com Pyinstaller que o programa será executado normalmente. Para executar o código a partir do aquivo Python, é necessário possuir as mesmas bibliotecas e versão do Python exigida para execução em Linux e clicar duas vezes no programa para executá-lo.
 
 ## Descrição do Projeto
 Criação de um sistema que integre uma prensa hidráulica e uma câmera que tira fotos do corpo de prova que é submetido ao ensaio na prensa. Por meio de uma interface gráfica, o usuário escolhe o modo de operação da camêra (por tempo ou por intervalo de força realizado pela prensa) para tirar a foto. Os dados do ensaio e as tensões nos momentos em que as fotos s
