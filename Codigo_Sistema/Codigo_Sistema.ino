@@ -1,3 +1,16 @@
+/*
+ *         ****************  CONSIDERAÇÕES GERAIS  ****************
+ * 
+ * Para o funcionamento do código, é necessário instalar e importar
+ * a biblioteca "Adafruit_ADS1X15.h". Ela tem o propósito de permitir a
+ * comunicação entre arduino e o conversor analógico-digital (ADS1115).
+ * 
+ * Um detalhe importante sobre a estrutura do programa é a não utilização
+ * da rotina void loop() como mantenedora dos loops do código. Optamos por
+ * controlar nós mesmos os loops por meio de funções específicas, como 
+ * modo_forca() e modo_tempo().
+ */
+  
 #include <Adafruit_ADS1015.h>
 #define valueModoTensao 1
 #define OK 1
@@ -20,13 +33,20 @@ unsigned long tempo;
 unsigned long tempoAnt = 0;
 float fundo_escala; 
 
-//Variaveis para receber as configuracoes
+/*
+ * Variáveis utilizadas para auxiliar no recebimento das configurações 
+ * de funcionamento do programa - dados enviados pela interface gráfica.
+ */
 char modo = '0';
 String intervaloS = "";
 String fundoS = "";
 float intervalo;
 
-Adafruit_ADS1115 ads(0x48);//conectado no GND
+/*
+ * Configuração do endereço (Address) do ADS1115 como sendo o GND,
+ * indicado por "0x48".
+ */ 
+Adafruit_ADS1115 ads(0x48);
 
 void setup() {
 
@@ -37,25 +57,24 @@ void setup() {
   
   ads.begin();
 
-  if(1)
-  {   
-    recebe_dados();
-    converte_dados();
-    //Serial.println("Entrou");
-    if(modo == 'f')
-    {
-      Serial.println("IMAGEM       TENSAO         FORCA         FORCA_P            TENSAO_P            INTERVALO");
+  //Receber as configurações de funcionamento do programa 
+  recebe_dados();
+  converte_dados();
 
-      intervalo_forca = intervalo;
-      modo_forca();
-    }
-    else if(modo == 't')
-    {
-      Serial.println("IMAGEM       TENSAO         FORCA         FORCA_P            TENSAO_P            INTERVALO");
-      intervalo_tempo = intervalo;
-      modo_tempo();      
-    }
-  } 
+  //O programa funcionará conforme o modo acionado - força (f) ou tempo (t)
+  if(modo == 'f')
+  {
+    Serial.println("IMAGEM       TENSAO         FORCA         FORCA_P            TENSAO_P            INTERVALO");
+
+    intervalo_forca = intervalo;
+    modo_forca();
+  }
+  else if(modo == 't')
+  {
+    Serial.println("IMAGEM       TENSAO         FORCA         FORCA_P            TENSAO_P            INTERVALO");
+    intervalo_tempo = intervalo;
+    modo_tempo();      
+  }
 }
 
 int verificar_comecar()
@@ -72,6 +91,17 @@ int verificar_comecar()
   return OK;
 }
 
+/* 
+ *  Os dados enviados pela interface gráfica estão organizados em uma estrutura 
+ *  fixa e muito bem definida: "modo,intervalo,fundo_de_escala", em uma única string. 
+ *  Para facilitar a coleta desses dados, decidimos analisar char por char enviado
+ *  pela interface e, em seguida, armazena-los em strings. 
+ *  No caso do modo de operacao, havia somente duas opcoes: tempo ou forca, que foram
+ *  representadas, respectivamente, por 't' e 'f'. Essa informacao foi armazenada em
+ *  um unico char chamado "modo".
+ *  O intervalo de operacao e o fundo de escala foram armazenados, respectivamente, nas
+ *  strings "intervaloS" e "fundoS".      
+ */
 void recebe_dados()
 {
   char caractere = '0';
@@ -113,15 +143,31 @@ void recebe_dados()
       }
     }
   }
-
 }
 
+ /* 
+ *  A funcao converte_dados() converte o intervalo de operacao e o fundo escala 
+ * de uma string - intervaloS e fundoS - para um numero flutuante (float). 
+ */
+ 
 void converte_dados()
 {
   intervalo = intervaloS.toFloat();
   fundo_escala = fundoS.toFloat();
 }
 
+/*                  Comtário sobre as funções que vêm a seguir
+ * A funções modo_tempo() e modo_forca funcionam de forma análoga,conforme
+ * a escolha feita pelo usuário do modo de operação do programa.
+ * Essas funções são responsáveis por manter o código funcionando por tempo
+ * indeterminado (loop) até que uma condição de parada (int parada) se torne
+ * verdadeira, isto é, igual a 1 - isso é modificado pela rotina receber_parada().
+ * Enquanto o programa funciona, as rotinas abaixo calculam a força exercida
+ * pela prensa no corpo de prova por meio de calculoForca() e, conforme passa o 
+ * intervalo de tempo ou de força pré determinado, acionam e desligam o relé - tarefa
+ * executada por verificarTempo() ou verificarForca().
+ */
+ 
 void modo_tempo()
 {
   int parada = 0;
@@ -146,21 +192,25 @@ void modo_forca()
   }
 }
 
+
 void calculoForca(){
   
-  sensorValue = ads.readADC_SingleEnded(1);
-  tensaoADS = sensorValue * (0.1875 /1000);//ler o que vem do ADS; 0<=tensaoADS<=5V
-  tensaoReal = tensaoADS*2;
+  sensorValue = ads.readADC_SingleEnded(1);           //Prensa conectada na porta 1
+  tensaoADS = sensorValue * (0.1875 /1000);           //Ler o que vem do ADS; 0<=tensaoADS<=5V
+  tensaoReal = tensaoADS*2;                           /*A tensão que vem da prensa é duas vezes 
+                                                      maior que a que chega no arduino*/
   forca = map_f(sensorValue,0,65536,0,fundo_escala);
 
-  if(forca >= fundo_escala)
+  if(forca >= fundo_escala)//Caso ocorra algum erro
       Serial.print("0");
 }
 
 void verificarForca(){
 
   calculoForca();
-  
+
+  //OBS: forcaAnt é inicializada com forcaAnt = 0.0
+  //Verificamos se o intervalo de força já foi percorrido para podermos acionar o relé novamente
   if((forca - forcaAnt)>= intervalo_forca){
 
     Serial.print(cont);
@@ -194,7 +244,8 @@ void verificarForca(){
 void verificarTempo(){
   
   tempo = millis();
-    
+
+  //Verificamos se o intervalo de tempo já foi percorrido para podermos acionar o relé novamente
   if((tempo - tempoAnt) >= intervalo_tempo){
 
     Serial.print(cont);
@@ -210,7 +261,7 @@ void verificarTempo(){
 
     calculoForca();
     
-//    Serial.print("            ");
+  //Serial.print("            ");
     Serial.print(forca,4);//FORCA POSTERIOR
     
     Serial.print("            ");
@@ -228,6 +279,10 @@ void verificarTempo(){
   }
 }
 
+/*
+ * A função receber_parada() retorna 1 quando o usuário, por meio da interface,
+ * indica que o programa deve parar.
+ */
 int receber_parada()
 {
   char parada = '1';
@@ -237,13 +292,20 @@ int receber_parada()
     parada = Serial.read();  
   }
 
-  if(parada == '0') //'0' significa parar o programa
+  if(parada == '0') //O recebimento do char '0' significa que o programa deve parar
     return 1;
   
   else
     return 0;
 }
 
+/*
+ * A função map_f() é uma adapatação da função map(). Sua modificação visa permitir
+ * resultados mais precisos no trabalho com números flutuantes, pois a função map() 
+ * arredondava valores fracionários para inteiros.
+ * Mais informações sobre a função map() no link:
+ * https://www.arduino.cc/reference/pt/language/functions/math/map/
+ */
 float map_f(float x, float in_min, float in_max, float out_min, float out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
