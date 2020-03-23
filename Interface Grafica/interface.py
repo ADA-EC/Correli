@@ -16,7 +16,7 @@ if os.name == 'nt': #Utilizada para descobrir qual o sistema operacional do comp
         if 'USB-SERIAL CH340' in p.description
     ]
     
-else:#(Ubuntu)
+else:   #Ubuntu
     arduino_ports = [
         p.device
         for p in serial.tools.list_ports.comports()
