@@ -137,8 +137,8 @@ class Application:
                 elif var.get()==2: 
                     modo = 'f'
 
-                if self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2):
-                    #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco
+                if self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2) or not self.intervaloesc.get().isnumeric() or not self.funesca.get().isnumeric():
+                    #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco ou se digitou alguma letra ao invés de número
                     msgb.showerror("ERRO!", "Insira um valor!")
 
                 elif modo == 'f' and float(self.intervaloesc.get())>float(self.funesca.get()):
