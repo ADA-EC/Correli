@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter as tk
-from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import asksaveasfile    #Biblioteca utilizada para salvar o arquivo na pasta que o usuário escolher 
 from tkinter import messagebox as msgb
 import datetime	#Biblioteca utilizada para pegar o horário e data de início do teste
 import serial
@@ -24,65 +24,35 @@ else:   #Ubuntu
         if 'USB2.0-Serial' in p.description
     ]
 
-arduino = serial.Serial(arduino_ports[0])
-
 
 #Pagina inicial da interface
 class Application:
     def __init__(self, master=None):
         tempoinicio=datetime.datetime.now() #Trecho utilizado para salvar o horário atual em que o programa foi aberto, para salvá-lo como dado
-
-        #Caixas de diálogos presentes na página inicial
-        self.primeiroContainer = Frame(master)
-        self.primeiroContainer["pady"] = 50
-        self.primeiroContainer["padx"] = 100
-        self.primeiroContainer.pack()
-
-
-        #Função para enviar dados para o Arduino
-        def enviar(info):
-            arduino.write(info.encode())
-            
+        
 
         #Segunda página da interface
         def parametros():
+            arduino = serial.Serial(self.listaPortas.get(self.listaPortas.curselection()))  #Utiliza o Arduino selecionado pelo usuário
+
+            #Função para enviar dados para o Arduino
+            def enviar(info):
+                arduino.write(info.encode())
+            
+            
             file = None
             while file is None:
                 #Salvamento do arquivo em um local da pasta desejado pelo usuário
                 files = [('Text Document', '*.txt'), 
-                         ('All Files', '*.*'),  
-                         ('Python Files', '*.py')] 
+                         ('Python Files', '*.py'),
+                         ('All Files', '*.*')]      #Tipos de arquivos possíveis para salvar
                 file = asksaveasfile(filetypes = files, defaultextension = files)
 
             
-            self.paginanova=Toplevel() #cria nova pagina
-            self.paginanova.wm_geometry("350x300")
+            #Terceira página
+            def pagPreDados():
 
-
-            #Containers para dividir de uma maneira melhor os elementos da página                
-            self.cont1 = Frame (self.paginanova)
-            self.cont1["pady"]=20
-            self.cont1["padx"]=30
-            self.cont1.pack()
-
-            self.cont2 = Frame (self.paginanova)
-            self.cont2["pady"]=20
-            self.cont2["padx"]=10
-            self.cont2.pack()
-
-            self.cont3 = Frame (self.paginanova)
-            self.cont3["pady"]=20
-            self.cont3["padx"]=10
-            self.cont3.pack()
-
-            self.cont4 = Frame (self.paginanova)
-            self.cont4["pady"]=20
-            self.cont4["padx"]=10
-            self.cont4.pack()
-
-            def pagPreDados():  #Página que inicia a câmera
                 
-
                 #Quarta página presente na interface, com a tabela que mostra os dados enviados pelo Arduino
                 def pagina_dados():
                     '''
@@ -99,9 +69,9 @@ class Application:
                     #Comandos utilizados para enviar ao documento criado os dados utilizados pelo usuário
                     enviar(info)
 
-                    '''
-                    Criação dos containers presentes na página de dados e posicionamento dos mesmos
-                    '''
+                    self.cont.destroy()
+
+                    #Criação dos containers presentes na página de dados e posicionamento dos mesmos
                     self.containerlist = Frame(master)
                     self.containerlist["pady"] = 1
                     self.containerlist["padx"] = 1
@@ -116,8 +86,6 @@ class Application:
                     self.botaofechar.pack(side=LEFT)
                     self.botaofechar["command"]=fechar
                     
-                    self.paginanova.destroy()
-                    self.primeiroContainer.destroy()
                     self.listbox=Listbox(self.containerlist, width=50, height=20)
 
                     
@@ -166,11 +134,10 @@ class Application:
                 #Página para iniciar o programa com os dados já inseridos
                 if var.get() == 1:  #Condição utilizada para salvar o modo de medição escolhido pelo usuário
                     modo = 't'
-                else: 
+                elif var.get()==2: 
                     modo = 'f'
 
-                
-                if self.intervaloesc.get()=="" or self.funesca.get()=="":
+                if self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2):
                     #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco
                     msgb.showerror("ERRO!", "Insira um valor!")
 
@@ -191,8 +158,7 @@ class Application:
                     self.cont4.destroy()
 
                     #Atualiza tamanho da página, para comportar a mensagem
-                    self.paginanova.wm_geometry("300x150")
-                    self.cont = Frame (self.paginanova)
+                    self.cont = Frame (master)
                     self.cont["pady"]=50
                     self.cont["padx"]=10
                     self.cont.pack()
@@ -204,8 +170,31 @@ class Application:
                     self.botIni = Button (self.cont, text = "Iniciar")
                     self.botIni.pack(side = BOTTOM)
                     self.botIni["command"] = pagina_dados
+
                     
 
+            self.primeiroContainer.destroy()
+            
+            #Containers da segunda página para dividir de uma maneira melhor os elementos da página                
+            self.cont1 = Frame (master)
+            self.cont1["pady"]=20
+            self.cont1["padx"]=30
+            self.cont1.pack()
+
+            self.cont2 = Frame (master)
+            self.cont2["pady"]=20
+            self.cont2["padx"]=10
+            self.cont2.pack()
+
+            self.cont3 = Frame (master)
+            self.cont3["pady"]=20
+            self.cont3["padx"]=10
+            self.cont3.pack()
+
+            self.cont4 = Frame (master)
+            self.cont4["pady"]=20
+            self.cont4["padx"]=10
+            self.cont4.pack()
 
             #Mensagens e botões presentes na 2a página da interface para adicionar os dados
 
@@ -244,11 +233,32 @@ class Application:
             self.botaoArq = Button (self.cont4, text = "Escolher arquivo")
             self.botaoArq.pack(side=RIGHT)
             #self.botaoArq["command"]=   PROCURAR ARQUIVO PARA COMPLETAR OS CAMPOS AUTOMATICAMENTE! -->SHIFT
-            
+
+        
+        
+        #Caixas de diálogos presentes na página inicial
+        self.primeiroContainer = Frame(master)
+        self.primeiroContainer["pady"] = 20
+        self.primeiroContainer["padx"] = 20
+        self.primeiroContainer.pack()
+
+        num_arduinos=len(arduino_ports)    #Variável que contém o número de arduinos linkados na máquina
+        i=0
+
+        if num_arduinos==0:
+            msgb.showerror("ERRO!", "Não existem Arduinos conectados a esse computador!")
+            root.destroy()
+            sys.exit()
+
+        self.listaPortas = Listbox(self.primeiroContainer, width = 20, heigh = 10)
+        while i<num_arduinos:   #Lista todas as portas com Arduino presentes
+            self.listaPortas.insert(END, arduino_ports[i])
+            i+=1
+        self.listaPortas.pack(side=LEFT)
                         
         self.botaoConfirm=Button(self.primeiroContainer, text="Criar arquivo")
         self.botaoConfirm["width"]=10
-        self.botaoConfirm.pack(side=BOTTOM)
+        self.botaoConfirm.pack(side=RIGHT)
         self.botaoConfirm["command"]=parametros #Quando é apertado o botão, o código vai para parâmetros, que cria outra página
 
 
