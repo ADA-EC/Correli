@@ -72,7 +72,7 @@ class Application:
                         #Comandos utilizados para enviar ao documento criado os dados utilizados pelo usuário
                         enviar(info)
 
-                        self.cont.destroy()
+                        #self.cont.destroy()
 
                         #Criação dos containers presentes na página de dados e posicionamento dos mesmos
                         self.containerlist = Frame(master)
@@ -155,10 +155,10 @@ class Application:
                         info = modo + "," +str(interv) + "," + str(fundo_escala)+"\n"
 
                         #Limpar a página de dados
-                        self.cont1.destroy()
+                        '''self.cont1.destroy()
                         self.cont2.destroy()
                         self.cont3.destroy()
-                        self.cont4.destroy()
+                        self.cont4.destroy()'''
 
                         #Atualiza tamanho da página, para comportar a mensagem
                         self.cont = Frame (master)
@@ -176,7 +176,7 @@ class Application:
 
                     
 
-                self.primeiroContainer.destroy()
+                #self.primeiroContainer.destroy()
                 
                 #Containers da segunda página para dividir de uma maneira melhor os elementos da página                
                 self.cont1 = Frame (master)
