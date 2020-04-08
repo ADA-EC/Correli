@@ -134,7 +134,7 @@ class Application:
                         self.listbox.pack(fill=BOTH, expand=1)
 
 
-                    #Página para iniciar o programa com os dados já inseridos
+                    #Terceira página para iniciar o programa com os dados já inseridos
                     if var.get() == 1:  #Condição utilizada para salvar o modo de medição escolhido pelo usuário
                         modo = 't'
                     elif var.get()==2: 
@@ -233,7 +233,7 @@ class Application:
                 self.botaoOk.pack(side=LEFT)
                 self.botaoOk["command"] = pagPreDados
 
-                self.botaoArq = Button (self.cont4, text = "Escolher arquivo")
+                self.botaoArq = Button (self.cont4, text = "Escolher configuração")
                 self.botaoArq.pack(side=RIGHT)
                 #self.botaoArq["command"]=   PROCURAR ARQUIVO PARA COMPLETAR OS CAMPOS AUTOMATICAMENTE! -->SHIFT
 
