@@ -190,10 +190,10 @@ class Application:
         num_arduinos=len(arduino_ports)    #Variável que contém o número de arduinos linkados na máquina
         i=0
 
-        '''if num_arduinos==0:
+        if num_arduinos==0:
             msgb.showerror("ERRO!", "Não existem Arduinos conectados a esse computador!")
             root.destroy()
-            sys.exit()'''
+            sys.exit()
 
         self.listaPortas = Listbox(self.primeiroContainer, width = 20, heigh = 10)
         while i<num_arduinos:   #Lista todas as portas com Arduino presentes
