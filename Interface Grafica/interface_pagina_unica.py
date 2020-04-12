@@ -28,7 +28,7 @@ else:   #Ubuntu
 #Pagina inicial da interface
 class Application:
     def __init__(self, master=None):
-        tempoinicio=datetime.datetime.now() #Trecho utilizado para salvar o horário atual em que o programa foi aberto, para salvá-lo como dado
+        #tempoinicio=datetime.datetime.now() #Trecho utilizado para salvar o horário atual em que o programa foi aberto, para salvá-lo como dado
         file = None
         self.nomearq = tk.StringVar()
         self.nomearq.set("")
@@ -70,6 +70,7 @@ class Application:
                 Após definido o intervalo, a 2a página é fechada, a primeira é limpa e os dados gerados
                 pela prensa são printados na tela da interface
                 '''
+                tempoinicio=datetime.datetime.now() #Trecho utilizado para salvar o horário atual em que o programa foi aberto, para salvá-lo como dado
 
                 #Função para enviar dados para o Arduino
                 def enviar(info):
@@ -79,7 +80,7 @@ class Application:
                 #Comandos utilizados para enviar ao documento criado os dados utilizados pelo usuário
                 enviar(info)
 
-                #self.cont.destroy()
+                self.cont.destroy()
 
                 #Criação dos containers presentes na página de dados e posicionamento dos mesmos
                 self.containerlist = Frame(master)
@@ -170,6 +171,9 @@ class Application:
                 info = modo + "," +str(interv) + "," + str(fundo_escala)+"\n"
                 arduino = serial.Serial(portaEscolhida.get())  #Utiliza o Arduino selecionado pelo usuário
 
+                #Destrói os containers anteriores
+                self.cont1.destroy()
+                self.cont2.destroy()
 
                 #Atualiza tamanho da página, para comportar a mensagem
                 self.cont = Frame (master)
