@@ -32,26 +32,32 @@ class Application:
         file = None
         self.nomearq = tk.StringVar()
         self.nomearq.set("")
+        self.nomearqpar = tk.StringVar()
+        self.nomearqpar.set("")
         self.enderecoarq = tk.StringVar()
         self.enderecoarq.set("")
-        
-        #Função para enviar dados para o Arduino
-        def enviar(info):
-            arduino.write(info.encode())
+        self.enderecoarqpar = tk.StringVar()
+        self.enderecoarqpar.set("")
 
-        #Segunda página da interface
-        def parametros():
-            file = None
-            while file is None:
-                #Salvamento do arquivo em um local da pasta desejado pelo usuário
-                files = [('Text Document', '*.txt'), 
-                         ('Python Files', '*.py'),
-                         ('All Files', '*.*')]      #Tipos de arquivos possíveis para salvar
-                file = asksaveasfile(filetypes = files, defaultextension = files)
+        #Função que cria o arquivo de salvamento do experimento
+        def Arquivo(file):                                                      #ARRUMAR, NÃO ESTÁ MUDANDO O VALOR DA VARIÁVEL!!!!!!
+            #Salvamento do arquivo em um local da pasta desejado pelo usuário
+            files = [('Text Document', '*.txt'), 
+                     ('Python Files', '*.py'),
+                     ('All Files', '*.*')]      #Tipos de arquivos possíveis para salvar
+            file = asksaveasfile(filetypes = files, defaultextension = files)
 
-                #TEM QUE ARRUMAR PARA SÓ COLOCAR O ENDEREÇO!!!!!
-                self.enderecoarq.set(str(file)) #Muda variável enderecoarq para o endereço do arquivo criado
+            #TEM QUE ARRUMAR PARA SÓ COLOCAR O ENDEREÇO!!!!!
+            self.enderecoarq.set(str(file)) #Muda variável enderecoarq para o endereço do arquivo criado
 
+
+        def fechar(condicao):       #função que fecha o programa
+            if condicao==1:
+                end = '0'   #variável enviada para o arduino, para que ele finalize o programa
+                enviar(end).close()
+            root.destroy()
+            sys.exit()
+                    
 
                 
         #Terceira página
@@ -64,11 +70,11 @@ class Application:
                 Após definido o intervalo, a 2a página é fechada, a primeira é limpa e os dados gerados
                 pela prensa são printados na tela da interface
                 '''
-                def fechar():       #função que fecha o programa
-                    end = '0'   #variável enviada para o arduino, para que ele finalize o programa
-                    enviar(end).close()
-                    root.destroy()
-                    sys.exit()
+
+                #Função para enviar dados para o Arduino
+                def enviar(info):
+                    arduino.write(info.encode())
+                
 
                 #Comandos utilizados para enviar ao documento criado os dados utilizados pelo usuário
                 enviar(info)
@@ -88,7 +94,7 @@ class Application:
 
                 self.botaofechar = Button(self.containerbotao, text="Fechar",)
                 self.botaofechar.pack(side=LEFT)
-                self.botaofechar["command"]=fechar
+                self.botaofechar["command"]=lambda: fechar(1)   #parâmetro 1 indica que arduino foi iniciado já
                 
                 self.listbox=Listbox(self.containerlist, width=50, height=20)
 
@@ -135,15 +141,23 @@ class Application:
                 self.listbox.pack(fill=BOTH, expand=1)
 
 
-            #Terceira página para iniciar o programa com os dados já inseridos
+            #Segunda página para iniciar o programa com os dados já inseridos
             if var.get() == 1:  #Condição utilizada para salvar o modo de medição escolhido pelo usuário
                 modo = 't'
             elif var.get()==2: 
                 modo = 'f'
 
+            print(str(file))
+            
             if self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2) or not self.intervaloesc.get().isnumeric() or not self.funesca.get().isnumeric():
                 #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco ou se digitou alguma letra ao invés de número
                 msgb.showerror("ERRO!", "Insira um valor!")
+
+            elif portaEscolhida.get()=='Portas Arduino':  #Teste para conferir se a pessoa escolheu uma porta do Arduino
+                msgb.showerror("ERRO!", "Escolha uma porta do Arduino!")
+
+            elif file==None:    #Teste para ver se pessoa escolheu um arquivo para salvar o experimento
+                msgb.showerror("ERRO!", "Escolha um arquivo para salvar o experimento!")
 
             elif modo == 'f' and float(self.intervaloesc.get())>float(self.funesca.get()):
                 #Teste para conferir que a pessoa nao inseriu um intervalo maior do que o fundo de escala
@@ -154,12 +168,8 @@ class Application:
                 interv=self.intervaloesc.get()
                 fundo_escala=self.funesca.get()
                 info = modo + "," +str(interv) + "," + str(fundo_escala)+"\n"
+                arduino = serial.Serial(portaEscolhida.get())  #Utiliza o Arduino selecionado pelo usuário
 
-                #Limpar a página de dados
-                '''self.cont1.destroy()
-                self.cont2.destroy()
-                self.cont3.destroy()
-                self.cont4.destroy()'''
 
                 #Atualiza tamanho da página, para comportar a mensagem
                 self.cont = Frame (master)
@@ -175,9 +185,6 @@ class Application:
                 self.botIni.pack(side = BOTTOM)
                 self.botIni["command"] = pagina_dados
 
-                    
-
-                #self.contensaio.destroy()
 
         #Página inical da interface, com os dados para salvar o arquivo e iniciar o programa
         num_arduinos=len(arduino_ports)    #Variável que contém o número de arduinos linkados na máquina
@@ -238,7 +245,7 @@ class Application:
         self.botaoLocal=Button(self.contLocArq, text="Alterar")
         self.botaoLocal["width"]=10
         self.botaoLocal.pack(side=RIGHT)
-        self.botaoLocal["command"]=parametros #Quando é apertado o botão, o código vai para parâmetros, que cria outra página
+        self.botaoLocal["command"]=lambda: Arquivo(file) #Quando é apertado o botão, o código vai para parâmetros, que cria outra página
 
 
         #Lista de portas de Arduino disponíveis
@@ -252,6 +259,10 @@ class Application:
         self.listaArduinos=OptionMenu(self.contarduino, portaEscolhida, arduino_ports)
         self.listaArduinos.config(width=15)
         self.listaArduinos.pack(side=BOTTOM)
+
+
+
+        #PARÂMETROS DO ENSAIO!!
 
 
         #Espaçamento entre o ensaio e os parâmetros do ensaio
@@ -310,7 +321,7 @@ class Application:
         self.Arquivo["font"] = ("Calibri", "12")
         self.Arquivo.pack(side=LEFT)
 
-        self.nomeArquivo=Label(self.contnomepar, textvariable=self.nomearq, bg="gray88", width=30)
+        self.nomeArquivo=Label(self.contnomepar, textvariable=self.nomearqpar, bg="gray88", width=30)
         self.nomeArquivo.pack(side=RIGHT)
 
 
@@ -324,7 +335,7 @@ class Application:
         self.local["font"]=("Calibri", "12")
         self.local.pack(side=LEFT)
 
-        self.localArquivo=Label(self.contLocPar, textvariable=self.enderecoarq, bg="gray88", width=50)
+        self.localArquivo=Label(self.contLocPar, textvariable=self.enderecoarqpar, bg="gray88", width=50)
         self.localArquivo["font"]=("Calibri", "10")
         self.localArquivo.pack(side=LEFT)
 
@@ -348,12 +359,6 @@ class Application:
         self.Tempo.pack (side = LEFT)
         self.Forca = Radiobutton(self.contModo, text = "Força", variable = var, value = 2)
         self.Forca.pack(side = RIGHT)
-
-        '''self.nada=Label(self.contModo, text="", width=15)
-        self.nada.pack(side=LEFT)
-
-        self.nada=Label(self.respModo, text="", width=14)
-        self.nada.pack(side=LEFT)'''
 
         self.msgEscala = Label (self.respModo, text = "Fundo de escala")
         self.msgEscala["font"] = ("Calibri", "12")
@@ -385,7 +390,7 @@ class Application:
         self.botaoFechar=Button(self.contBotao, text="Fechar")
         self.botaoFechar["width"]=10
         self.botaoFechar.pack(side=LEFT)
-        #self.botaoFechar["command"]=       Criar função fechar programa
+        self.botaoFechar["command"]=lambda: fechar(0)      #Chama a função que fecha o programa, parâmetro 0 indica que Arduino não foi iniciado
 
         self.nada=Label(self.contBotao, text="", width=40)
         self.nada.pack(side=LEFT)
