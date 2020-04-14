@@ -29,7 +29,8 @@ else:   #Ubuntu
 class Application:
     def __init__(self, master=None):
         #tempoinicio=datetime.datetime.now() #Trecho utilizado para salvar o horário atual em que o programa foi aberto, para salvá-lo como dado
-        file = None
+        global file
+        file=None
         self.nomearq = tk.StringVar()
         self.nomearq.set("")
         self.nomearqpar = tk.StringVar()
@@ -40,21 +41,24 @@ class Application:
         self.enderecoarqpar.set("")
 
         #Função que cria o arquivo de salvamento do experimento
-        def Arquivo(file):                                                      #ARRUMAR, NÃO ESTÁ MUDANDO O VALOR DA VARIÁVEL!!!!!!
+        def Arquivo():                                      #ARRUMAR, NÃO ESTÁ MUDANDO O VALOR DA VARIÁVEL!!!!!!
             #Salvamento do arquivo em um local da pasta desejado pelo usuário
+            global file
             files = [('Text Document', '*.txt'), 
                      ('Python Files', '*.py'),
                      ('All Files', '*.*')]      #Tipos de arquivos possíveis para salvar
             file = asksaveasfile(filetypes = files, defaultextension = files)
 
-            #TEM QUE ARRUMAR PARA SÓ COLOCAR O ENDEREÇO!!!!!
-            self.enderecoarq.set(str(file)) #Muda variável enderecoarq para o endereço do arquivo criado
+            print(file.name)
+            self.enderecoarq.set(str(file.name)) #Muda variável enderecoarq para o endereço do arquivo criado
+
+            fname=str(file.name)
+            tamanhofile=len(fname.split('/'))
+            filename=fname.split('/')[tamanhofile-1]
+            self.nomearq.set(str(filename))
 
 
-        def fechar(condicao):       #função que fecha o programa
-            if condicao==1:
-                end = '0'   #variável enviada para o arduino, para que ele finalize o programa
-                enviar(end).close()
+        def fechar():       #função que fecha o programa
             root.destroy()
             sys.exit()
                     
@@ -75,6 +79,13 @@ class Application:
                 #Função para enviar dados para o Arduino
                 def enviar(info):
                     arduino.write(info.encode())
+
+                def close():       #função que fecha o programa
+                    end = '0'   #variável enviada para o arduino, para que ele finalize o programa
+                    enviar(end)
+                    file.close()
+                    root.destroy()
+                    sys.exit()
                 
 
                 #Comandos utilizados para enviar ao documento criado os dados utilizados pelo usuário
@@ -95,7 +106,7 @@ class Application:
 
                 self.botaofechar = Button(self.containerbotao, text="Fechar",)
                 self.botaofechar.pack(side=LEFT)
-                self.botaofechar["command"]=lambda: fechar(1)   #parâmetro 1 indica que arduino foi iniciado já
+                self.botaofechar["command"]=close   #parâmetro 1 indica que arduino foi iniciado já
                 
                 self.listbox=Listbox(self.containerlist, width=50, height=20)
 
@@ -166,6 +177,7 @@ class Application:
 
             else:   #Caso o usuário tenha inserido todos os valores corretamente
                 #Recupera os dados colocados pelo usuário, para usá-los como parâmetro
+                
                 interv=self.intervaloesc.get()
                 fundo_escala=self.funesca.get()
                 info = modo + "," +str(interv) + "," + str(fundo_escala)+"\n"
@@ -192,7 +204,6 @@ class Application:
 
         #Página inical da interface, com os dados para salvar o arquivo e iniciar o programa
         num_arduinos=len(arduino_ports)    #Variável que contém o número de arduinos linkados na máquina
-        i=0
 
         if num_arduinos==0:
             msgb.showerror("ERRO!", "Não existem Arduinos conectados a esse computador!")
@@ -249,18 +260,17 @@ class Application:
         self.botaoLocal=Button(self.contLocArq, text="Alterar")
         self.botaoLocal["width"]=10
         self.botaoLocal.pack(side=RIGHT)
-        self.botaoLocal["command"]=lambda: Arquivo(file) #Quando é apertado o botão, o código vai para parâmetros, que cria outra página
-
+        self.botaoLocal["command"]=Arquivo #Quando é apertado o botão, o código vai para parâmetros, que cria outra página
 
         #Lista de portas de Arduino disponíveis
         self.contarduino = Frame(self.cont1)
         self.contarduino["pady"] = 5
         self.contarduino["padx"] = 0
         self.contarduino.pack()
-        
+
         portaEscolhida=StringVar()
         portaEscolhida.set("Portas Arduino") # default value
-        self.listaArduinos=OptionMenu(self.contarduino, portaEscolhida, arduino_ports)
+        self.listaArduinos=OptionMenu(self.contarduino, portaEscolhida, *arduino_ports)
         self.listaArduinos.config(width=15)
         self.listaArduinos.pack(side=BOTTOM)
 
@@ -394,7 +404,7 @@ class Application:
         self.botaoFechar=Button(self.contBotao, text="Fechar")
         self.botaoFechar["width"]=10
         self.botaoFechar.pack(side=LEFT)
-        self.botaoFechar["command"]=lambda: fechar(0)      #Chama a função que fecha o programa, parâmetro 0 indica que Arduino não foi iniciado
+        self.botaoFechar["command"]=fechar      #Chama a função que fecha o programa, parâmetro 0 indica que Arduino não foi iniciado
 
         self.nada=Label(self.contBotao, text="", width=40)
         self.nada.pack(side=LEFT)
