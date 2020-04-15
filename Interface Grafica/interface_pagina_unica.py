@@ -28,7 +28,6 @@ else:   #Ubuntu
 #Pagina inicial da interface
 class Application:
     def __init__(self, master=None):
-        #tempoinicio=datetime.datetime.now() #Trecho utilizado para salvar o horário atual em que o programa foi aberto, para salvá-lo como dado
         global file
         file=None
         self.nomearq = tk.StringVar()
@@ -41,17 +40,17 @@ class Application:
         self.enderecoarqpar.set("")
 
         #Função que cria o arquivo de salvamento do experimento
-        def Arquivo():                                      #ARRUMAR, NÃO ESTÁ MUDANDO O VALOR DA VARIÁVEL!!!!!!
-            #Salvamento do arquivo em um local da pasta desejado pelo usuário
+        def Arquivo():
             global file
+            #Salvamento do arquivo em um local da pasta desejado pelo usuário
             files = [('Text Document', '*.txt'), 
                      ('Python Files', '*.py'),
                      ('All Files', '*.*')]      #Tipos de arquivos possíveis para salvar
             file = asksaveasfile(filetypes = files, defaultextension = files)
 
-            print(file.name)
-            self.enderecoarq.set(str(file.name)) #Muda variável enderecoarq para o endereço do arquivo criado
+            self.enderecoarq.set(str(file.name)) #Muda variável enderecoarq para o endereço do arquivo criado, mostrando assim na interface
 
+            #Cria a variável com o nome do arquivo e a adiciona em nomearq para ser mostrado o nome do arquivo criado na interface
             fname=str(file.name)
             tamanhofile=len(fname.split('/'))
             filename=fname.split('/')[tamanhofile-1]
@@ -62,13 +61,11 @@ class Application:
             root.destroy()
             sys.exit()
                     
-
-                
-        #Terceira página
+  
+        #Página prévia antes do programa ser iniciado com os parâmetros escolhidos pelo usuário
         def pagPreDados():
 
-            
-            #Quarta página presente na interface, com a tabela que mostra os dados enviados pelo Arduino
+            #Terceira página presente na interface, com a tabela que mostra os dados enviados pelo Arduino
             def pagina_dados():
                 '''
                 Após definido o intervalo, a 2a página é fechada, a primeira é limpa e os dados gerados
@@ -159,7 +156,6 @@ class Application:
             elif var.get()==2: 
                 modo = 'f'
 
-            print(str(file))
             
             if self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2) or not self.intervaloesc.get().isnumeric() or not self.funesca.get().isnumeric():
                 #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco ou se digitou alguma letra ao invés de número
@@ -205,7 +201,7 @@ class Application:
         #Página inical da interface, com os dados para salvar o arquivo e iniciar o programa
         num_arduinos=len(arduino_ports)    #Variável que contém o número de arduinos linkados na máquina
 
-        if num_arduinos==0:
+        if num_arduinos==0: #Caso não existam Arduinos conectados, o programa não rodará
             msgb.showerror("ERRO!", "Não existem Arduinos conectados a esse computador!")
             root.destroy()
             sys.exit()
@@ -277,7 +273,6 @@ class Application:
 
 
         #PARÂMETROS DO ENSAIO!!
-
 
         #Espaçamento entre o ensaio e os parâmetros do ensaio
         self.contvazio=Frame(self.cont1)
