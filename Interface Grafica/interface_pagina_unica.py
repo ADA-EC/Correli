@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter.filedialog import asksaveasfile    #Biblioteca utilizada para salvar o arquivo na pasta que o usuário escolher 
+from tkinter.filedialog import askopenfile
 from tkinter import messagebox as msgb
 import datetime	#Biblioteca utilizada para pegar o horário e data de início do teste
 import serial
