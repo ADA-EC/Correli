@@ -8,6 +8,7 @@ import sys  #Biblioteca usada para reiniciar o programa
 import os   #Biblioteca usada para reiniciar o programa
 import warnings
 import serial.tools.list_ports
+import json
 
 #Função que descobre as portas do computador que estão com o Arduino conectadas
 if os.name == 'nt': #Utilizada para descobrir qual o sistema operacional do computador (Windows)
@@ -38,6 +39,8 @@ class Application:
         self.enderecoarq.set("")
         self.enderecoarqpar = tk.StringVar()
         self.enderecoarqpar.set("")
+        global config
+        config={}
 
         #Função que cria o arquivo de salvamento do experimento
         def Arquivo():
@@ -56,6 +59,31 @@ class Application:
             filename=fname.split('/')[tamanhofile-1]
             self.nomearq.set(str(filename))
 
+         #Função que salva um arquivo com as configurações de funcionamento do programa para acesso posterior
+        def salvarConfig(config):
+            fileTypes = [('Arquivo JSON', '*.json')]
+
+            arquivo = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
+            
+            #Enviar as configurações para o .json
+            if arquivo is not None:
+                json.dump(config, arquivo)
+            
+            arquivo.close()
+        
+        #Função que carrega configurações pré-estabelecidas de funcionamento do programa 
+        def carregarConfig():
+            global config
+            
+            fileTypes = [('Arquivo JSON', '*.json')]
+            
+            arquivo = askopenfile(mode ='r', filetypes = fileTypes)
+
+            #Importar as informações do .json
+            if arquivo is not None:
+                config = json.load(arquivo)
+
+            arquivo.close()
 
         def fechar():       #função que fecha o programa
             root.destroy()
