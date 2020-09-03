@@ -47,4 +47,6 @@ json_file.close()
 print(data)
 
 '''
+var = data['arquivo']
+print(var)
 

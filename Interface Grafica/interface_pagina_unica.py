@@ -40,6 +40,12 @@ class Application:
         self.enderecoarq.set("")
         self.enderecoarqpar = tk.StringVar()
         self.enderecoarqpar.set("")
+        global var #Indica o modo de operacao (tempo=1; forca=2)
+        var = tk.IntVar()
+        global fundoEsc
+        fundoEsc = tk.IntVar()
+        global intervalo
+        intervalo = tk.DoubleVar()
         global config
         config={}
 
@@ -60,21 +66,45 @@ class Application:
             filename=fname.split('/')[tamanhofile-1]
             self.nomearq.set(str(filename))
 
-         #Função que salva um arquivo com as configurações de funcionamento do programa para acesso posterior
-        def salvarConfig(config):
+
+        #Função que salva um arquivo com as configurações de funcionamento do programa para acesso posterior
+        def salvarConfig():
+            global config
+            global var
+            global fundoEsc
+            global intervalo
+
             fileTypes = [('Arquivo JSON', '*.json')]
 
             arquivo = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
+
+            self.enderecoarqpar.set(str(arquivo.name)) #Muda variável enderecoarq para o endereço do arquivo criado, mostrando assim na interface
+
+            #Cria a variável com o nome do arquivo e a adiciona em nomearq para ser mostrado o nome do arquivo criado na interface
+            fname=str(arquivo.name)
+            tamanhofile=len(fname.split('/'))
+            filename=fname.split('/')[tamanhofile-1]
+            self.nomearqpar.set(str(filename))
             
+            print(var.get())
+            print(intervalo.get())
+            print(fundoEsc.get())
+            config['modo'] = var.get()
+            config['intervalo'] = intervalo.get()
+            config['fundo_escala'] = fundoEsc.get()
+
             #Enviar as configurações para o .json
             if arquivo is not None:
                 json.dump(config, arquivo)
-            
+
             arquivo.close()
-        
+                  
         #Função que carrega configurações pré-estabelecidas de funcionamento do programa 
         def carregarConfig():
             global config
+            global var
+            global fundoEsc
+            global intervalo
             
             fileTypes = [('Arquivo JSON', '*.json')]
             
@@ -82,9 +112,22 @@ class Application:
 
             #Importar as informações do .json
             if arquivo is not None:
-                config = json.load(arquivo)
+              	config = json.load(arquivo)
+
+            #Variaveis para visualizacao do usuario
+            self.enderecoarqpar.set(str(arquivo.name)) 
+
+            fname=str(arquivo.name)
+            tamanhofile=len(fname.split('/'))
+            filename=fname.split('/')[tamanhofile-1]
+            self.nomearqpar.set(str(filename))
+
+            var.set(int(config['modo']))
+            fundoEsc.set(int(config['fundo_escala']))
+            intervalo.set(float(config['intervalo']))
 
             arquivo.close()
+
 
         def fechar():       #função que fecha o programa
             root.destroy()
@@ -294,7 +337,7 @@ class Application:
         self.contarduino.pack()
 
         portaEscolhida=StringVar()
-        portaEscolhida.set("Portas Arduino") # default value
+        portaEscolhida.set("Portas Arduino") #default value
         self.listaArduinos=OptionMenu(self.contarduino, portaEscolhida, *arduino_ports)
         self.listaArduinos.config(width=15)
         self.listaArduinos.pack(side=BOTTOM)
@@ -339,14 +382,14 @@ class Application:
 
         self.botaosalvar = Button (self.contbotaopar, text = "Salvar Parâmetros")
         self.botaosalvar.pack(side=LEFT)
-        #self.botaosalvar["command"]=   SALVAR CONFIG --> SHIFT
+        self.botaosalvar["command"]=salvarConfig
 
         self.nada2=Label(self.contbotaopar, text="", width=20)
         self.nada2.pack(side=LEFT)
 
         self.botaoCarreg = Button (self.contbotaopar, text = "Carregar Parâmetros")
         self.botaoCarreg.pack(side=RIGHT)
-        #self.botaoCarreg["command"]=   CARREGAR CONFIGURAÇÕES --> SHIFT
+        self.botaoCarreg["command"]=carregarConfig
 
 
         #Nome do arquivo de parâmetros
@@ -392,7 +435,7 @@ class Application:
         self.configuracao.pack()
 
         #Função para escolher apenas uma opção entre força e tempo
-        var = tk.IntVar()
+        #var = tk.IntVar()
         self.Tempo = Radiobutton(self.contModo, text = "Tempo", variable = var, value = 1)
         self.Tempo.pack (side = LEFT)
         self.Forca = Radiobutton(self.contModo, text = "Força", variable = var, value = 2)
@@ -402,7 +445,7 @@ class Application:
         self.msgEscala["font"] = ("Calibri", "12")
         self.msgEscala.pack(side=LEFT)
 
-        self.funesca = Entry(self.respModo)
+        self.funesca = Entry(self.respModo, textvariable=fundoEsc)
         self.funesca.pack(side=RIGHT)
 
 
@@ -416,7 +459,7 @@ class Application:
         self.mensagem["font"] = ("Calibri", "12")
         self.mensagem.pack(side=LEFT)
 
-        self.intervaloesc = Entry(self.contInt)
+        self.intervaloesc = Entry(self.contInt, textvariable=intervalo)
         self.intervaloesc.pack(side=RIGHT)
 
         
