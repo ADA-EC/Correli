@@ -49,6 +49,13 @@ class Application:
         global config
         config={}
 
+        def isnumber(value):
+            try:
+                 float(value)
+            except ValueError:
+                return False
+            return True
+
         #Função que cria o arquivo de salvamento do experimento
         def Arquivo():
             global file
@@ -74,6 +81,24 @@ class Application:
             global fundoEsc
             global intervalo
 
+<<<<<<< HEAD
+            #Condições para evitar que o usuário salve um arquivo de parâmetro vazio
+            if var.get()!=1 and var.get()!=2:
+                msgb.showerror("ERRO","Complete o campo de modo de operação")
+                print(var.get())
+                return
+            elif not isnumber(fundoEsc.get()):
+                msgb.showerror("ERRO","Insira um valor para o fundo de escala")
+                return
+            elif not isnumber(intervalo.get()):
+                msgb.showerror("ERRO","Insira um valor para o intervalo")
+                return
+            elif fundoEsc.get()==0 or intervalo.get()==0:
+                msgb.showerror("ERRO","Insira um valor de parâmetro diferente de 0")
+                return
+
+=======
+>>>>>>> cf0ea8e3f10cf1636be5a7a6d1df24f00d0ddb98
             fileTypes = [('Arquivo JSON', '*.json')]
 
             arquivo = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
@@ -123,8 +148,15 @@ class Application:
             self.nomearqpar.set(str(filename))
 
             var.set(int(config['modo']))
+<<<<<<< HEAD
+            #fundoEsc.set(int(config['fundo_escala']))
+            #intervalo.set(float(config['intervalo']))
+            fundoEsc.set(config['fundo_escala'])
+            intervalo.set(config['intervalo'])
+=======
             fundoEsc.set(int(config['fundo_escala']))
             intervalo.set(float(config['intervalo']))
+>>>>>>> cf0ea8e3f10cf1636be5a7a6d1df24f00d0ddb98
 
             arquivo.close()
 
@@ -229,15 +261,22 @@ class Application:
                 modo = 'f'
 
             
-            if self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2) or not self.intervaloesc.get().isnumeric() or not self.funesca.get().isnumeric():
-                #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco ou se digitou alguma letra ao invés de número
-                msgb.showerror("ERRO!", "Insira um valor!")
+
+            if file==None:    #Teste para ver se pessoa escolheu um arquivo para salvar o experimento
+                msgb.showerror("ERRO!", "Escolha um arquivo para salvar o experimento!")
 
             elif portaEscolhida.get()=='Portas Arduino':  #Teste para conferir se a pessoa escolheu uma porta do Arduino
                 msgb.showerror("ERRO!", "Escolha uma porta do Arduino!")
+            
+            elif self.intervaloesc.get()=="" or self.funesca.get()=="" or (var.get()!=1 and var.get()!=2):
+                #Teste para conferir que o usuário não deixou nenhum campo de preenchimento em branco ou se digitou alguma letra ao invés de número
+                msgb.showerror("ERRO!", "Preencha os parâmetros do ensaio")
 
-            elif file==None:    #Teste para ver se pessoa escolheu um arquivo para salvar o experimento
-                msgb.showerror("ERRO!", "Escolha um arquivo para salvar o experimento!")
+            elif not isnumber(self.funesca.get()):  #Teste para conferir se usuário adicionou um número
+                msgb.showerror("ERRO!","Insira um número válido no fundo de escala")
+
+            elif not isnumber(self.intervaloesc.get()): #Teste para conferir de valor é um número
+                msgb.showerror("ERRO!","Insira um número válido no intervalo")
 
             elif modo == 'f' and float(self.intervaloesc.get())>float(self.funesca.get()):
                 #Teste para conferir que a pessoa nao inseriu um intervalo maior do que o fundo de escala
