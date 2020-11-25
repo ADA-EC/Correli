@@ -81,6 +81,21 @@ class Application:
             global fundoEsc
             global intervalo
 
+            #Condições para evitar que o usuário salve um arquivo de parâmetro vazio
+            if var.get()!=1 and var.get()!=2:
+                msgb.showerror("ERRO","Complete o campo de modo de operação")
+                print(var.get())
+                return
+            elif not isnumber(fundoEsc.get()):
+                msgb.showerror("ERRO","Insira um valor para o fundo de escala")
+                return
+            elif not isnumber(intervalo.get()):
+                msgb.showerror("ERRO","Insira um valor para o intervalo")
+                return
+            elif fundoEsc.get()==0 or intervalo.get()==0:
+                msgb.showerror("ERRO","Insira um valor de parâmetro diferente de 0")
+                return
+
             fileTypes = [('Arquivo JSON', '*.json')]
 
             arquivo = asksaveasfile(filetypes = fileTypes, defaultextension = fileTypes)
@@ -130,8 +145,8 @@ class Application:
             self.nomearqpar.set(str(filename))
 
             var.set(int(config['modo']))
-            fundoEsc.set(int(config['fundo_escala']))
-            intervalo.set(float(config['intervalo']))
+            fundoEsc.set(config['fundo_escala'])
+            intervalo.set(config['intervalo'])
 
             arquivo.close()
 
