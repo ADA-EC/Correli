@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['interface_pagina_unica.py'],
-             pathex=['C:\\Users\\brcol\\Desktop\\Git\\Projeto-Correli\\Interface Grafica'],
+             pathex=['/home/bruno/Documents/Git/Projeto-Correli/Interface Grafica'],
              binaries=[],
              datas=[],
              hiddenimports=[],
