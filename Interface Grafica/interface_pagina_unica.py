@@ -108,9 +108,6 @@ class Application:
             filename=fname.split('/')[tamanhofile-1]
             self.nomearqpar.set(str(filename))
             
-            print(var.get())
-            print(intervalo.get())
-            print(fundoEsc.get())
             config['modo'] = var.get()
             config['intervalo'] = intervalo.get()
             config['fundo_escala'] = fundoEsc.get()
