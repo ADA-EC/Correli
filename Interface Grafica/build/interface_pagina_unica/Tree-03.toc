@@ -1,0 +1,6 @@
+('C:\\Users\\brcol\\Desktop\\Git\\Projeto-Correli\\Interface '
+ 'Grafica\\build\\interface_pagina_unica\\pyserial-3.5-py3.9.egg',
+ None,
+ {'*.pyc', '*.cp39-win_amd64.pyd', '*.pyw', '*.pyd', '*.py', 'EGG-INFO'},
+ 'DATA',
+ [])
